@@ -110,11 +110,11 @@ if not all(key in st.session_state for key in state_vars):
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>CDI: {st.session_state['cdi']}</h6>", unsafe_allow_html=True)
+    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>CDI: {round(st.session_state['cdi'], 2)}</h6>", unsafe_allow_html=True)
 with col2:
-    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>Selic: {st.session_state['selic']}</h6>", unsafe_allow_html=True)
+    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>Selic: {round(st.session_state['selic'],2)}</h6>", unsafe_allow_html=True)
 with col3:
-    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>TR: {st.session_state['tr']}</h6>", unsafe_allow_html=True)
+    st.markdown(f"<h6 style='text-align: center; margin: 20px;'>TR: {round(st.session_state['tr'],2)}</h6>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 with col2:
