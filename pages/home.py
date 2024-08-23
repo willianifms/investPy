@@ -10,3 +10,4 @@ st.header("Comece agora mesmo!")
 # Botões para navegar para as outras páginas
 st.page_link("./pages/custom.py", label="Simular Ativo Personalizado", icon="💰")
 st.page_link("./pages/piggybank.py", label="Simular Cofrinhos Populares", icon="🐷")
+st.page_link("./pages/fii.py", label="Simular Renda fundo Imobiliario", icon="📊")
