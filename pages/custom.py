@@ -251,7 +251,8 @@ if st.button("Simular Ativos", use_container_width=True):
     def highlight_max(s):
         return ['font-weight: bold; color: green' if v == s.max() else '' for v in s]
 
-    st.dataframe(result_df.style.apply(highlight_max, subset=['Lucro Final (R$)', 'Valor Total (R$)']), use_container_width=False)
+    st.dataframe(result_df.style.apply(highlight_max, subset=['Lucro Final (R$)', 'Valor Total (R$)'])
+                 .format({col: "{:.2f}" for col in result_df.select_dtypes(include='number').columns}), use_container_width=False)
     
     # Mostrando o gráfico do plotly com o Streamlit
     st.plotly_chart(fig, use_container_width=True, theme=None)
