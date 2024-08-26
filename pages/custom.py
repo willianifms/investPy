@@ -1,7 +1,6 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-import numpy as np
 import requests
 import asyncio
 import datetime
@@ -176,7 +175,7 @@ else:
     years = duration_value
 
 # Botão de simulação
-if st.button("Simular Ativo", use_container_width=True):
+if st.button("Simular Ativos", use_container_width=True):
     # Recuperar valores atuais das taxas relevantes
     cdi = st.session_state['cdi']
     selic = st.session_state['selic']
@@ -209,24 +208,51 @@ if st.button("Simular Ativo", use_container_width=True):
     month_names = date_range.strftime('%B %Y')
 
     # Disposição dos dados num dataframe com Pandas para melhor manipulação
-    df = pd.DataFrame({
+    graph_df = pd.DataFrame({
         'Mês': month_names,
         'CDB': cdb_growth,
         'LCI/LCA': lci_lca_growth,
         'Poupança': savings_growth
     })
     
-    # Plotando o gráfico com o plotly.exxpress
-    fig = px.line(df, x='Mês', y=['CDB', 'LCI/LCA', 'Poupança'], 
-                  title='Comparação de Investimentos de Renda Fixa ao Longo do Tempo',
-                  labels={'value': 'Valor Final (R$)', 'variable': 'Tipo de Investimento'})
-    # Mostrando o gráfico do plotly com o Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    # Transformando o DataFrame para o formato longo
+    graph_df_melted = graph_df.melt(id_vars='Mês', var_name='Tipo de Investimento', value_name='Valor')
 
-    max_cdb = cdb_growth[-1]
-    max_lci_lca = lci_lca_growth[-1]
-    max_savings = savings_growth[-1]
+    # Plotando o gráfico com plotly.express
+    fig = px.line(graph_df_melted, x='Mês', y='Valor', color='Tipo de Investimento',
+                labels={'Valor': 'Valor Final (R$)', 'Tipo de Investimento': 'Tipo de Investimento'})
+
+    # Usar eixo Y logarítmico
+    fig.update_layout( yaxis=dict(title='Valor Final (R$)', type='log'))
+
+    # Adicionando marcadores para cada ponto
+    fig.update_traces(mode='lines+markers', marker=dict(size=6, symbol='circle'))
     
-    profit_cdb = max_cdb - investment_value - (monthly_contribution * (int(years * 12)))
-    profit_lci_lca = max_lci_lca - investment_value - (monthly_contribution * (int(years * 12)))
-    profit_savings = max_savings - investment_value - (monthly_contribution * (int(years * 12)))
+    # Calculando o lucro individual de cada investimento (montante final - investimento inicial - contribuições mensais)
+    total_contributions = monthly_contribution * (len(months)-1)
+
+    cdb_profit = cdb_growth[-1] - investment_value - total_contributions
+    lci_lca_profit = lci_lca_growth[-1] - investment_value - total_contributions
+    savings_profit = savings_growth[-1] - investment_value - total_contributions
+
+    # Calculando o valor total investido
+    total_investido = investment_value + total_contributions
+
+    # Criando o DataFrame para comparar investimentos
+    result_df = pd.DataFrame({
+        'Tipo de Investimento': ['CDB', 'LCI/LCA', 'Poupança'],
+        'Investimento Inicial (R$)': [investment_value] * 3,
+        'Aportes Mensais (R$)': [total_contributions] * 3,
+        'Lucro Final (R$)': [cdb_profit, lci_lca_profit, savings_profit],
+        'Valor Total (R$)': [cdb_growth[-1], lci_lca_growth[-1], savings_growth[-1]]
+    })
+
+    # Customizando a exibição para destacar o melhor investimento
+    def highlight_max(s):
+        return ['font-weight: bold; color: green' if v == s.max() else '' for v in s]
+
+    st.dataframe(result_df.style.apply(highlight_max, subset=['Lucro Final (R$)', 'Valor Total (R$)'])
+                 .format({col: "{:.2f}" for col in result_df.select_dtypes(include='number').columns}), use_container_width=False)
+    
+    # Mostrando o gráfico do plotly com o Streamlit
+    st.plotly_chart(fig, use_container_width=True, theme=None)
