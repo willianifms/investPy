@@ -166,7 +166,7 @@ with col2:
     lci_lca_rentability = st.number_input("Rentabilidade da LCI/LCA (% do CDI)", value=85.0, min_value=0.0, max_value=300.0, step=10.0)
 with col1:
     investment_value = st.number_input("Investimento Inicial (R$)", value=1000.0, min_value=0.0, step=100.0)
-    duration_value = st.number_input(f"Vencimento ({st.session_state['duration_unit']})", value=1, min_value=1, step=1)
+    duration_value = st.number_input(f"Vencimento ({st.session_state['duration_unit']})", value=6, min_value=1, step=1)
     cdb_rentability = st.number_input("Rentabilidade do CDB (% do CDI)", value=100.0, min_value=0.0, max_value=300.0, step=10.0)
 
 # Considerar unidade selecionada no selectbox
