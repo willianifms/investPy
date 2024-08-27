@@ -34,8 +34,8 @@ def calcular_cdi(taxa_cdi, valor_inicial, tempo, valor_contribuicao, unidade_tem
         anos = tempo / 12 # para converter meses em anos, divide o valor de tempo por 12 
     else:
         anos = tempo
-    
     # M = C * (1 + i)^t
+    #Conta de juros compostos 
     valor_anual = valor_inicial * (1 + taxa_cdi) ** anos
 
     # Valor futuro dos aportes mensais (valor futuro de anuidade ordinária) i,t = mensal
@@ -44,11 +44,11 @@ def calcular_cdi(taxa_cdi, valor_inicial, tempo, valor_contribuicao, unidade_tem
     valor_mensal = (1 + taxa_cdi) ** (1 / 12) - 1
     
     meses = int(anos * 12)#convertendo de ano para meses
-    
+    #valor final do aporte eh o rendimento total dos aportes mensais
     valor_final_contribuicao = valor_contribuicao * (((1 + valor_mensal) ** meses - 1) / valor_mensal)
     
-    
-    valor_total = valor_anual + valor_final_contribuicao
+    # valor_anual=quanto o rendimento inicial rendeu 
+    valor_total = valor_anual + valor_final_contribuicao #soma do montante do investimento incial + aportes mensais
     
     
     return valor_total
