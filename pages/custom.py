@@ -217,6 +217,7 @@ if st.button("Simular Ativos", use_container_width=True):
     
     # Transformando o DataFrame para o formato longo
     graph_df_melted = graph_df.melt(id_vars='Mês', var_name='Tipo de Investimento', value_name='Valor')
+    print(graph_df_melted)
 
     # Plotando o gráfico com plotly.express
     fig = px.line(graph_df_melted, x='Mês', y='Valor', color='Tipo de Investimento',
